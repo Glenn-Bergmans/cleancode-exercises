@@ -3,10 +3,14 @@ package be.swsb.cleancode.ch9;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static be.swsb.cleancode.ch9.EnvironmentController.*;
 import static be.swsb.cleancode.ch9.HardwareComponents.*;
 import static be.swsb.cleancode.ch9.HardwareState.OFF;
 import static be.swsb.cleancode.ch9.HardwareState.ON;
+import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EnvironmentControllerTest {
@@ -21,47 +25,59 @@ public class EnvironmentControllerTest {
     }
 
     @Test
-    public void turnOnCoolerAndBlowerIfTooHot() throws Exception {
+    public void tic_GivenTempTooHot_ThenTurnOnCoolerAndBlower() throws Exception {
+        // GIVEN
         hw.setTemp(TOO_HOT);
+
+        // WHEN
         controller.tic();
-        assertThat(hw.getStateOf(HEATER)).isEqualTo(OFF);
-        assertThat(hw.getStateOf(BLOWER)).isEqualTo(ON);
-        assertThat(hw.getStateOf(COOLER)).isEqualTo(ON);
-        assertThat(hw.getStateOf(HI_TEMP_ALARM)).isEqualTo(OFF);
-        assertThat(hw.getStateOf(LO_TEMP_ALARM)).isEqualTo(OFF);
+
+        // THEN
+        assertThatComponentsAreOn(asList(BLOWER, COOLER));
     }
 
     @Test
-    public void turnOnHeaterAndBlowerIfTooCold() throws Exception {
+    public void tic_GivenTempTooCold_ThenTurnOnHeaterAndBlower() throws Exception {
+        // GIVEN
         hw.setTemp(TOO_COLD);
+
+        // WHEN
         controller.tic();
-        assertThat(hw.getStateOf(HEATER)).isEqualTo(ON);
-        assertThat(hw.getStateOf(BLOWER)).isEqualTo(ON);
-        assertThat(hw.getStateOf(COOLER)).isEqualTo(OFF);
-        assertThat(hw.getStateOf(HI_TEMP_ALARM)).isEqualTo(OFF);
-        assertThat(hw.getStateOf(LO_TEMP_ALARM)).isEqualTo(OFF);
+
+        // THEN
+        assertThatComponentsAreOn(asList(HEATER, BLOWER));
     }
 
     @Test
-    public void turnOnHiTempAlarmAtThreshold() throws Exception {
+    public void tic_GivenTempWayTooHot_ThenTurnOnHiTempAlarm() throws Exception {
+        // GIVEN
         hw.setTemp(WAY_TOO_HOT);
+
+        // WHEN
         controller.tic();
-        assertThat(hw.getStateOf(HEATER)).isEqualTo(OFF);
-        assertThat(hw.getStateOf(BLOWER)).isEqualTo(ON);
-        assertThat(hw.getStateOf(COOLER)).isEqualTo(ON);
-        assertThat(hw.getStateOf(HI_TEMP_ALARM)).isEqualTo(ON);
-        assertThat(hw.getStateOf(LO_TEMP_ALARM)).isEqualTo(OFF);
+
+        // THEN
+        assertThatComponentsAreOn(asList(BLOWER, COOLER, HI_TEMP_ALARM));
     }
 
     @Test
-    public void turnOnLoTempAlarmAtThreshold() throws Exception {
+    public void tic_GivenTempWayTooCold_ThenTurnOnLoTempAlarm() throws Exception {
+        // GIVEN
         hw.setTemp(WAY_TOO_COLD);
+
+        // WHEN
         controller.tic();
-        assertThat(hw.getStateOf(HEATER)).isEqualTo(ON);
-        assertThat(hw.getStateOf(BLOWER)).isEqualTo(ON);
-        assertThat(hw.getStateOf(COOLER)).isEqualTo(OFF);
-        assertThat(hw.getStateOf(HI_TEMP_ALARM)).isEqualTo(OFF);
-        assertThat(hw.getStateOf(LO_TEMP_ALARM)).isEqualTo(ON);
+
+        // THEN
+        assertThatComponentsAreOn(asList(HEATER, BLOWER, LO_TEMP_ALARM));
+    }
+
+    private void assertThatComponentsAreOn(List<HardwareComponents> hardwareComponents) {
+        hardwareComponents
+                .forEach(hardwareComponent -> assertThat(hw.getStateOf(hardwareComponent)).isEqualTo(ON));
+        stream(HardwareComponents.values())
+                .filter(hardwareComponent -> ! hardwareComponents.contains(hardwareComponent))
+                .forEach(hardwareComponent -> assertThat(hw.getStateOf(hardwareComponent)).isEqualTo(OFF));
     }
 
 }
