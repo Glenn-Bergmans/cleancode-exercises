@@ -1,12 +1,18 @@
 package be.swsb.cleancode.ch9;
 
+import java.util.Map;
+
+import static java.util.Arrays.stream;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 public class MockControlHardware implements ControlHardware {
     private double temp;
-    private boolean heaterState;
-    private boolean blowerState;
-    private boolean coolerState;
-    private boolean hiTempAlarm;
-    private boolean loTempAlarm;
+    private Map<HardwareComponents, HardwareState> hardwareStates;
+
+    public MockControlHardware() {
+        hardwareStates = stream(HardwareComponents.values()).collect(toMap(identity(), x -> HardwareState.OFF));
+    }
 
     void setTemp(double temp) {
         this.temp = temp;
@@ -18,77 +24,13 @@ public class MockControlHardware implements ControlHardware {
     }
 
     @Override
-    public boolean heaterState() {
-        return heaterState;
+    public HardwareState getStateOf(HardwareComponents hardwareComponent) {
+        return hardwareStates.get(hardwareComponent);
     }
 
     @Override
-    public boolean blowerState() {
-        return blowerState;
+    public void setStateOf(HardwareComponents hardwareComponent, HardwareState state) {
+        hardwareStates.put(hardwareComponent, state);
     }
 
-    @Override
-    public boolean coolerState() {
-        return coolerState;
-    }
-
-    @Override
-    public boolean hiTempAlarm() {
-        return hiTempAlarm;
-    }
-
-    @Override
-    public boolean loTempAlarm() {
-        return loTempAlarm;
-    }
-
-    @Override
-    public void turnOnBlower() {
-        this.blowerState = true;
-    }
-
-    @Override
-    public void turnOnHeater() {
-        this.heaterState = true;
-    }
-
-    @Override
-    public void turnOnLoTempAlarm() {
-        this.loTempAlarm = true;
-    }
-
-    @Override
-    public void turnOnCooler() {
-        this.coolerState = true;
-    }
-
-    @Override
-    public void turnOnHiTempAlarm() {
-        this.hiTempAlarm = true;
-    }
-
-    @Override
-    public void turnOffBlower() {
-        this.blowerState = false;
-    }
-
-    @Override
-    public void turnOffHeater() {
-        this.heaterState = false;
-    }
-
-    @Override
-    public void turnOffLoTempAlarm() {
-        this.loTempAlarm = false;
-    }
-
-    @Override
-    public void turnOffCooler() {
-        this.coolerState = false;
-    }
-
-    @Override
-    public void turnOffHiTempAlarm() {
-        this.hiTempAlarm = false;
-    }
 }

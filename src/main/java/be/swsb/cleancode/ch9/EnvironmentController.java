@@ -1,5 +1,9 @@
 package be.swsb.cleancode.ch9;
 
+import static be.swsb.cleancode.ch9.HardwareComponents.*;
+import static be.swsb.cleancode.ch9.HardwareState.OFF;
+import static be.swsb.cleancode.ch9.HardwareState.ON;
+
 public class EnvironmentController {
 
     public static final double TOO_HOT = 30.0;
@@ -19,27 +23,27 @@ public class EnvironmentController {
         double currentTemperature = controlHardware.getTemp();
 
         if (currentTemperature <= TOO_COLD) {
-            controlHardware.turnOnBlower();
-            controlHardware.turnOnHeater();
+            controlHardware.setStateOf(BLOWER, ON);
+            controlHardware.setStateOf(HEATER, ON);
             if (currentTemperature <= WAY_TOO_COLD) {
-                controlHardware.turnOnLoTempAlarm();
+                controlHardware.setStateOf(LO_TEMP_ALARM, ON);
             } else {
-                controlHardware.turnOffLoTempAlarm();
+                controlHardware.setStateOf(LO_TEMP_ALARM, OFF);
             }
         } else if (currentTemperature >= TOO_HOT) {
-            controlHardware.turnOnBlower();
-            controlHardware.turnOnCooler();
+            controlHardware.setStateOf(BLOWER, ON);
+            controlHardware.setStateOf(COOLER, ON);
             if (currentTemperature >= WAY_TOO_HOT) {
-                controlHardware.turnOnHiTempAlarm();
+                controlHardware.setStateOf(HI_TEMP_ALARM, ON);
             } else {
-                controlHardware.turnOffHiTempAlarm();
+                controlHardware.setStateOf(HI_TEMP_ALARM, OFF);
             }
         } else {
-            controlHardware.turnOffBlower();
-            controlHardware.turnOffCooler();
-            controlHardware.turnOffHeater();
-            controlHardware.turnOffLoTempAlarm();
-            controlHardware.turnOffHiTempAlarm();
+            controlHardware.setStateOf(BLOWER, OFF);
+            controlHardware.setStateOf(COOLER, OFF);
+            controlHardware.setStateOf(HEATER, OFF);
+            controlHardware.setStateOf(LO_TEMP_ALARM, OFF);
+            controlHardware.setStateOf(HI_TEMP_ALARM, OFF);
         }
     }
 }
