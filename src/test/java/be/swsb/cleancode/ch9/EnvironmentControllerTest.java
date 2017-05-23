@@ -10,7 +10,6 @@ import static be.swsb.cleancode.ch9.HardwareComponents.*;
 import static be.swsb.cleancode.ch9.HardwareState.OFF;
 import static be.swsb.cleancode.ch9.HardwareState.ON;
 import static java.util.Arrays.asList;
-import static java.util.Arrays.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EnvironmentControllerTest {
@@ -78,7 +77,7 @@ public class EnvironmentControllerTest {
         componentsThatShouldBeOn
                 .forEach(hardwareComponent -> assertThat(controlHardware.getStateOf(hardwareComponent)).isEqualTo(ON));
 
-        stream(HardwareComponents.values())
+        controlHardware.getComponents().stream()
                 .filter(hardwareComponent -> ! componentsThatShouldBeOn.contains(hardwareComponent))
                 .forEach(hardwareComponent -> assertThat(controlHardware.getStateOf(hardwareComponent)).isEqualTo(OFF));
     }

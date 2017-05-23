@@ -1,5 +1,7 @@
 package be.swsb.cleancode.ch9;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
@@ -31,6 +33,11 @@ public class MockControlHardware implements ControlHardware {
     @Override
     public void setStateOf(HardwareComponents hardwareComponent, HardwareState state) {
         hardwareStates.put(hardwareComponent, state);
+    }
+
+    @Override
+    public List<HardwareComponents> getComponents() {
+        return new ArrayList<>(hardwareStates.keySet());
     }
 
 }

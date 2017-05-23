@@ -22,23 +22,27 @@ public class EnvironmentController {
     public void tic() {
         double currentTemperature = controlHardware.getTemp();
 
-        if (currentTemperature <= TOO_COLD) {
+        if(currentTemperature <= TOO_COLD) {
             controlHardware.setStateOf(BLOWER, ON);
             controlHardware.setStateOf(HEATER, ON);
-            if (currentTemperature <= WAY_TOO_COLD) {
+            if(currentTemperature <= WAY_TOO_COLD) {
                 controlHardware.setStateOf(LO_TEMP_ALARM, ON);
-            } else {
+            }
+            else {
                 controlHardware.setStateOf(LO_TEMP_ALARM, OFF);
             }
-        } else if (currentTemperature >= TOO_HOT) {
+        }
+        else if(currentTemperature >= TOO_HOT) {
             controlHardware.setStateOf(BLOWER, ON);
             controlHardware.setStateOf(COOLER, ON);
-            if (currentTemperature >= WAY_TOO_HOT) {
+            if(currentTemperature >= WAY_TOO_HOT) {
                 controlHardware.setStateOf(HI_TEMP_ALARM, ON);
-            } else {
+            }
+            else {
                 controlHardware.setStateOf(HI_TEMP_ALARM, OFF);
             }
-        } else {
+        }
+        else {
             controlHardware.setStateOf(BLOWER, OFF);
             controlHardware.setStateOf(COOLER, OFF);
             controlHardware.setStateOf(HEATER, OFF);
